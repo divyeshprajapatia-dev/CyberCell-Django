@@ -1,0 +1,87 @@
+{% extends 'crime_report/base.html' %}
+
+{% block title %}Update Report Status - CyberCell{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Update Report Status</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ crime.title }}</h5>
+                    <p class="text-muted">
+                        <i class="fas fa-calendar-alt me-2"></i> Reported on: {{ crime.reported_on|date:"F d, Y" }}<br>
+                        <i class="fas fa-user me-2"></i> Reported by: {{ crime.reported_by.username }}<br>
+                        <i class="fas fa-map-marker-alt me-2"></i> Location: {{ crime.location }}<br>
+                        <i class="fas fa-tag me-2"></i> Category: {{ crime.category.name }}
+                    </p>
+                    
+                    <div class="alert alert-info">
+                        <h6 class="alert-heading">Current Status: <span class="badge bg-{{ crime.status|lower }}">{{ crime.get_status_display }}</span></h6>
+                        {% if crime.assigned_to %}
+                            <p class="mb-0">Assigned to: {{ crime.assigned_to.username }}</p>
+                        {% else %}
+                            <p class="mb-0">Not assigned to any officer</p>
+                        {% endif %}
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="id_status" class="form-label">Update Status</label>
+                            {{ status_form.status.errors }}
+                            {{ status_form.status|safe }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_assigned_to" class="form-label">Assign To</label>
+                            {{ status_form.assigned_to.errors }}
+                            {{ status_form.assigned_to|safe }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_update_text" class="form-label">Update Notes</label>
+                            {{ update_form.update_text.errors }}
+                            {{ update_form.update_text|safe }}
+                            <div class="form-text">Provide details about this status update. This will be visible to the reporter.</div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'crime_detail' crime.pk %}" class="btn btn-outline-secondary me-md-2">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Update Status</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add Bootstrap form classes to the Django form fields
+    document.addEventListener('DOMContentLoaded', function() {
+        const statusSelect = document.getElementById('id_status');
+        const assignedToSelect = document.getElementById('id_assigned_to');
+        const updateTextArea = document.getElementById('id_update_text');
+        
+        if (statusSelect) {
+            statusSelect.classList.add('form-select');
+        }
+        
+        if (assignedToSelect) {
+            assignedToSelect.classList.add('form-select');
+        }
+        
+        if (updateTextArea) {
+            updateTextArea.classList.add('form-control');
+            updateTextArea.rows = 5;
+        }
+    });
+</script>
+{% endblock %}

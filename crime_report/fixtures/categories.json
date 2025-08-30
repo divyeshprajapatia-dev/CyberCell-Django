@@ -1,0 +1,66 @@
+[
+  {
+    "model": "crime_report.crimecategory",
+    "pk": 1,
+    "fields": {
+      "name": "Phishing",
+      "description": "Fraudulent attempts to obtain sensitive information by disguising as a trustworthy entity in electronic communication."
+    }
+  },
+  {
+    "model": "crime_report.crimecategory",
+    "pk": 2,
+    "fields": {
+      "name": "Identity Theft",
+      "description": "The deliberate use of someone else's identity to gain a financial advantage or obtain credit and other benefits."
+    }
+  },
+  {
+    "model": "crime_report.crimecategory",
+    "pk": 3,
+    "fields": {
+      "name": "Ransomware",
+      "description": "A type of malicious software designed to block access to a computer system until a sum of money is paid."
+    }
+  },
+  {
+    "model": "crime_report.crimecategory",
+    "pk": 4,
+    "fields": {
+      "name": "Data Breach",
+      "description": "A security incident in which sensitive, protected or confidential data is copied, transmitted, viewed, stolen or used by an unauthorized individual."
+    }
+  },
+  {
+    "model": "crime_report.crimecategory",
+    "pk": 5,
+    "fields": {
+      "name": "Online Harassment",
+      "description": "The use of electronic communications to bully a person, typically by sending messages of an intimidating or threatening nature."
+    }
+  },
+  {
+    "model": "crime_report.crimecategory",
+    "pk": 6,
+    "fields": {
+      "name": "Hacking",
+      "description": "Unauthorized access to data in a system or computer."
+    }
+  },
+  {
+    "model": "crime_report.crimecategory",
+    "pk": 7,
+    "fields": {
+      "name": "Online Fraud",
+      "description": "Deception deliberately practiced to secure unfair or unlawful gain via internet services or software."
+    }
+  },
+  {
+    "model": "crime_report.crimecategory",
+    "pk": 8,
+    "fields": {
+      "name": "Malware Distribution",
+      "description": "The spreading of software that is specifically designed to disrupt, damage, or gain unauthorized access to a computer system."
+    }
+  }
+]

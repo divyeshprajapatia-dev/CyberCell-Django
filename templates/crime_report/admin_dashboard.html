@@ -1,0 +1,417 @@
+{% extends 'crime_report/base.html' %}
+
+{% block title %}Admin Dashboard - CyberCell{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Dashboard Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-primary text-white shadow">
+                <div class="card-body py-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="mb-1">Welcome, {{ user.get_full_name|default:user.username }}</h2>
+                            <p class="mb-0">{{ user.profile.get_user_type_display }} Dashboard | {{ today|date:"l, F d, Y" }}</p>
+                        </div>
+                        <div>
+                            <span class="badge bg-light text-primary fs-6">{{ user.profile.get_user_type_display }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Reports</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_reports }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Resolved Cases</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ resolved_reports }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">In Progress</div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ investigating_reports }}</div>
+                                </div>
+                                <div class="col">
+                                    <div class="progress progress-sm mr-2">
+                                        <div class="progress-bar bg-info" role="progressbar" style="width: {{ investigating_percentage }}%" aria-valuenow="{{ investigating_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-spinner fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending Reports</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ pending_reports }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clock fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+        <!-- Area Chart -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <!-- Card Header -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Reports Overview (Last 6 Months)</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="reportsChart" style="height: 300px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pie Chart -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <!-- Card Header -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Reports by Category</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="chart-pie">
+                        <canvas id="categoryPieChart" style="height: 300px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+        <!-- Recent Reports -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent Reports</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for report in recent_reports %}
+                                <tr>
+                                    <td>#{{ report.id }}</td>
+                                    <td>{{ report.title|truncatechars:30 }}</td>
+                                    <td>{{ report.date_reported|date:"M d, Y" }}</td>
+                                    <td>
+                                        <span class="badge bg-{% if report.status == 'pending' %}warning{% elif report.status == 'investigating' %}info{% elif report.status == 'resolved' %}success{% elif report.status == 'closed' %}secondary{% else %}danger{% endif %}">
+                                            {{ report.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'crime_detail' report.id %}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{% url 'manage_reports' %}" class="btn btn-primary btn-sm">
+                            View All Reports
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Location Heatmap -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Crime Hotspots by Location</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Location</th>
+                                    <th>Reports</th>
+                                    <th>Percentage</th>
+                                    <th>Trend</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for location in top_locations %}
+                                <tr>
+                                    <td>{{ location.city }}, {{ location.state }}</td>
+                                    <td>{{ location.count }}</td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-danger" role="progressbar" style="width: {{ location.percentage }}%" aria-valuenow="{{ location.percentage }}" aria-valuemin="0" aria-valuemax="100">{{ location.percentage }}%</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if location.trend > 0 %}
+                                            <span class="text-danger"><i class="fas fa-arrow-up"></i> {{ location.trend }}%</span>
+                                        {% elif location.trend < 0 %}
+                                            <span class="text-success"><i class="fas fa-arrow-down"></i> {{ location.trend|cut:"-" }}%</span>
+                                        {% else %}
+                                            <span class="text-muted"><i class="fas fa-equals"></i> 0%</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="locationMap" style="height: 250px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions Row -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <a href="{% url 'manage_reports' %}" class="card bg-primary text-white shadow h-100 py-2 text-decoration-none">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-white text-uppercase mb-1">Manage Reports</div>
+                                            <div class="h5 mb-0 font-weight-bold text-white-800">View & Update</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-clipboard-list fa-2x text-white-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <a href="{% url 'manage_users' %}" class="card bg-success text-white shadow h-100 py-2 text-decoration-none">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-white text-uppercase mb-1">Manage Users</div>
+                                            <div class="h5 mb-0 font-weight-bold text-white-800">{{ total_users }} Users</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-users fa-2x text-white-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <a href="/admin/" class="card bg-warning text-white shadow h-100 py-2 text-decoration-none">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-white text-uppercase mb-1">Admin Panel</div>
+                                            <div class="h5 mb-0 font-weight-bold text-white-800">Django Admin</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-tools fa-2x text-white-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <a href="{% url 'report_crime' %}" class="card bg-danger text-white shadow h-100 py-2 text-decoration-none">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-white text-uppercase mb-1">New Report</div>
+                                            <div class="h5 mb-0 font-weight-bold text-white-800">Create Report</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-plus-circle fa-2x text-white-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .border-left-primary {
+        border-left: 0.25rem solid #4e73df !important;
+    }
+    .border-left-success {
+        border-left: 0.25rem solid #1cc88a !important;
+    }
+    .border-left-info {
+        border-left: 0.25rem solid #36b9cc !important;
+    }
+    .border-left-warning {
+        border-left: 0.25rem solid #f6c23e !important;
+    }
+    .chart-area, .chart-pie {
+        position: relative;
+        height: 100%;
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Fetch crime statistics data
+        fetch('{% url "crime_stats_api" %}')
+            .then(response => response.json())
+            .then(data => {
+                // Line Chart for Reports by Month
+                const reportsCtx = document.getElementById('reportsChart').getContext('2d');
+                new Chart(reportsCtx, {
+                    type: 'line',
+                    data: {
+                        labels: data.crime_by_month.map(item => item.month),
+                        datasets: [{
+                            label: 'Total Reports',
+                            data: data.crime_by_month.map(item => item.count),
+                            backgroundColor: 'rgba(78, 115, 223, 0.05)',
+                            borderColor: 'rgba(78, 115, 223, 1)',
+                            pointBackgroundColor: 'rgba(78, 115, 223, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(78, 115, 223, 1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+                
+                // Pie Chart for Categories
+                const categoryCtx = document.getElementById('categoryPieChart').getContext('2d');
+                new Chart(categoryCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.crime_by_category.map(item => item.name),
+                        datasets: [{
+                            data: data.crime_by_category.map(item => item.count),
+                            backgroundColor: [
+                                '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b',
+                                '#5a5c69', '#858796', '#6f42c1', '#20c9a6', '#fd7e14'
+                            ],
+                            hoverBackgroundColor: [
+                                '#2e59d9', '#17a673', '#2c9faf', '#dda20a', '#be3e2e',
+                                '#4e4f54', '#60616f', '#5a37a1', '#1aa88a', '#d56a0f'
+                            ],
+                            hoverBorderColor: "rgba(234, 236, 244, 1)",
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    boxWidth: 12
+                                }
+                            }
+                        },
+                        cutout: '70%'
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching crime statistics:', error));
+    });
+</script>
+{% endblock %}

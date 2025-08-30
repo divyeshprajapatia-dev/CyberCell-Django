@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple POST Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .test-section { border: 1px solid #ddd; padding: 20px; margin-bottom: 20px; border-radius: 5px; }
+        .result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; min-height: 50px; }
+        button { padding: 10px 15px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+        input[type=text] { padding: 8px; width: 300px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>POST Request Testing Page</h1>
+        <p>This page contains multiple ways to test POST requests to ensure they're working correctly.</p>
+        
+        <div class="test-section">
+            <h2>1. Standard HTML Form POST</h2>
+            <form method="post" action="/test-post/" id="standard-form">
+                {% csrf_token %}
+                <input type="text" name="test_field" value="test_value">
+                <button type="submit">Submit POST Form</button>
+            </form>
+        </div>
+        
+        <div class="test-section">
+            <h2>2. JavaScript Fetch API POST</h2>
+            <button id="js-post-btn">Send POST via JavaScript Fetch</button>
+            <div id="js-result" class="result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>3. XMLHttpRequest POST</h2>
+            <button id="xhr-post-btn">Send POST via XMLHttpRequest</button>
+            <div id="xhr-result" class="result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>4. jQuery AJAX POST</h2>
+            <button id="jquery-post-btn">Send POST via jQuery</button>
+            <div id="jquery-result" class="result"></div>
+        </div>
+    </div>
+    
+    <script>
+        // 1. Add event listener to prevent form submission for testing
+        document.getElementById('standard-form').addEventListener('submit', function(event) {
+            // Uncomment the next line to prevent actual form submission and see console logs
+            // event.preventDefault();
+            console.log('Form submitted');
+        });
+        
+        // 2. JavaScript Fetch API
+        document.getElementById('js-post-btn').addEventListener('click', function() {
+            // Get CSRF token
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            console.log('CSRF Token:', csrftoken);
+            
+            // Create form data
+            const formData = new FormData();
+            formData.append('test_field', 'test_value_js_fetch');
+            
+            // Send POST request
+            fetch('/test-post/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+                body: formData
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.text();
+            })
+            .then(data => {
+                document.getElementById('js-result').innerHTML = data;
+                console.log('Success:', data);
+            })
+            .catch(error => {
+                document.getElementById('js-result').innerHTML = 'Error: ' + error;
+                console.error('Error:', error);
+            });
+        });
+        
+        // 3. XMLHttpRequest
+        document.getElementById('xhr-post-btn').addEventListener('click', function() {
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/test-post/', true);
+            xhr.setRequestHeader('X-CSRFToken', csrftoken);
+            
+            xhr.onload = function() {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    document.getElementById('xhr-result').innerHTML = xhr.responseText;
+                    console.log('XHR Success:', xhr.responseText);
+                } else {
+                    document.getElementById('xhr-result').innerHTML = 'Error: ' + xhr.statusText;
+                    console.error('XHR Error:', xhr.statusText);
+                }
+            };
+            
+            xhr.onerror = function() {
+                document.getElementById('xhr-result').innerHTML = 'Network Error';
+                console.error('XHR Network Error');
+            };
+            
+            const formData = new FormData();
+            formData.append('test_field', 'test_value_xhr');
+            xhr.send(formData);
+        });
+        
+        // 4. Simulate jQuery AJAX (without actually using jQuery)
+        document.getElementById('jquery-post-btn').addEventListener('click', function() {
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            // This is a simulation of jQuery's $.ajax function using fetch
+            console.log('Simulating jQuery AJAX POST');
+            
+            fetch('/test-post/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'test_field=test_value_jquery'
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('jquery-result').innerHTML = data;
+                console.log('jQuery Success:', data);
+            })
+            .catch(error => {
+                document.getElementById('jquery-result').innerHTML = 'Error: ' + error;
+                console.error('jQuery Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{% extends 'crime_report/base.html' %}
+
+{% block title %}Logged Out - CyberCell{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-6 mx-auto text-center">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    <h2 class="card-title mb-4">Successfully Logged Out</h2>
+                    <p class="card-text mb-4">Thank you for using CyberCell. You have been successfully logged out of your account.</p>
+                    <div class="d-grid gap-2 col-6 mx-auto">
+                        <a href="{% url 'login' %}" class="btn btn-primary">Log In Again</a>
+                        <a href="{% url 'home' %}" class="btn btn-outline-secondary">Return to Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

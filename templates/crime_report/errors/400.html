@@ -1,0 +1,9 @@
+{% extends 'crime_report/base.html' %}
+
+{% block content %}
+<div class="error-container">
+    <h1>400 - Bad Request</h1>
+    <p>Sorry, your request could not be processed. Please check your input and try again.</p>
+    <a href="{% url 'home' %}" class="btn btn-primary">Return to Home</a>
+</div>
+{% endblock %}

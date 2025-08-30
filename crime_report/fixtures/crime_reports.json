@@ -1,0 +1,113 @@
+[
+  {
+    "model": "crime_report.location",
+    "pk": 1,
+    "fields": {
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "area": "Andheri",
+      "pincode": "400053"
+    }
+  },
+  {
+    "model": "crime_report.location",
+    "pk": 2,
+    "fields": {
+      "city": "Delhi",
+      "state": "Delhi",
+      "area": "Connaught Place",
+      "pincode": "110001"
+    }
+  },
+  {
+    "model": "crime_report.location",
+    "pk": 3,
+    "fields": {
+      "city": "Bangalore",
+      "state": "Karnataka",
+      "area": "Koramangala",
+      "pincode": "560034"
+    }
+  },
+  {
+    "model": "crime_report.crimereport",
+    "pk": 1,
+    "fields": {
+      "title": "Phishing Email from Bank",
+      "description": "I received an email claiming to be from my bank asking for my account details and password. The email looked suspicious with grammatical errors.",
+      "date_of_crime": "2025-07-25",
+      "time_of_crime": "14:30:00",
+      "location": 1,
+      "category": 1,
+      "reported_by": 2,
+      "reported_on": "2025-08-01T10:15:00Z",
+      "status": "investigating",
+      "evidence_file": "",
+      "assigned_to": 3
+    }
+  },
+  {
+    "model": "crime_report.crimereport",
+    "pk": 2,
+    "fields": {
+      "title": "Unauthorized Access to Email Account",
+      "description": "Someone has accessed my email account and sent spam messages to all my contacts. I noticed unusual login activity from an unknown location.",
+      "date_of_crime": "2025-07-28",
+      "time_of_crime": "23:15:00",
+      "location": 2,
+      "category": 6,
+      "reported_by": 2,
+      "reported_on": "2025-08-01T16:45:00Z",
+      "status": "pending",
+      "evidence_file": "",
+      "assigned_to": null
+    }
+  },
+  {
+    "model": "crime_report.crimereport",
+    "pk": 3,
+    "fields": {
+      "title": "Online Shopping Fraud",
+      "description": "I ordered a laptop from an online store and paid Rs. 45,000 but never received the product. The website is now unreachable and the customer service number is disconnected.",
+      "date_of_crime": "2025-07-15",
+      "time_of_crime": "18:20:00",
+      "location": 3,
+      "category": 7,
+      "reported_by": 2,
+      "reported_on": "2025-07-20T09:30:00Z",
+      "status": "resolved",
+      "evidence_file": "",
+      "assigned_to": 3
+    }
+  },
+  {
+    "model": "crime_report.crimeupdate",
+    "pk": 1,
+    "fields": {
+      "crime_report": 1,
+      "update_text": "Initial investigation has begun. We have contacted the bank to verify the phishing attempt and are tracking the origin of the email.",
+      "updated_by": 3,
+      "updated_on": "2025-08-02T11:30:00Z"
+    }
+  },
+  {
+    "model": "crime_report.crimeupdate",
+    "pk": 2,
+    "fields": {
+      "crime_report": 3,
+      "update_text": "We have identified the fraudulent website and its operators. Legal action has been initiated and we are working with payment providers to attempt recovery of funds.",
+      "updated_by": 3,
+      "updated_on": "2025-07-25T14:45:00Z"
+    }
+  },
+  {
+    "model": "crime_report.crimeupdate",
+    "pk": 3,
+    "fields": {
+      "crime_report": 3,
+      "update_text": "Case resolved. The payment has been refunded to your account. The fraudulent website has been taken down and the operators have been identified for prosecution.",
+      "updated_by": 3,
+      "updated_on": "2025-08-01T16:20:00Z"
+    }
+  }
+]

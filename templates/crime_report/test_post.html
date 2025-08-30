@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test POST Request</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .test-area {
+            margin-top: 30px;
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test POST Request</h1>
+    
+    <form method="post" action="/test-post/">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" value="Test Name">
+        </div>
+        <div class="form-group">
+            <label for="message">Message:</label>
+            <input type="text" id="message" name="message" value="Test Message">
+        </div>
+        <button type="submit">Submit POST Request</button>
+    </form>
+    
+    <div class="test-area">
+        <h2>JavaScript POST Test</h2>
+        <button id="js-post-btn">Send POST via JavaScript</button>
+        <div id="result" style="margin-top: 15px; padding: 10px; background-color: #f5f5f5;"></div>
+    </div>
+
+    <script>
+        document.getElementById('js-post-btn').addEventListener('click', function() {
+            // Get the CSRF token from the cookie
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            const csrftoken = getCookie('csrftoken');
+            
+            // Create form data
+            const formData = new FormData();
+            formData.append('name', 'JavaScript Test');
+            formData.append('message', 'This was sent via JavaScript fetch API');
+            
+            // Send POST request
+            fetch('/test-post/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('result').textContent = data;
+            })
+            .catch(error => {
+                document.getElementById('result').textContent = 'Error: ' + error;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+{% extends 'crime_report/base.html' %}
+
+{% block title %}{{ crime.title }} - CyberCell{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Crime Report Details -->
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
+                    <h4 class="mb-0"><i class="fas fa-file-alt me-2"></i>Crime Report Details</h4>
+                    <span class="badge bg-{% if crime.status == 'pending' %}warning{% elif crime.status == 'investigating' %}info{% elif crime.status == 'resolved' %}success{% elif crime.status == 'closed' %}secondary{% else %}danger{% endif %} fs-6">
+                        {{ crime.get_status_display }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title mb-4">{{ crime.title }}</h3>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5 class="text-primary"><i class="fas fa-info-circle me-2"></i>Basic Information</h5>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th class="ps-0" style="width: 40%;">Report ID:</th>
+                                    <td>#{{ crime.id }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="ps-0">Category:</th>
+                                    <td>{{ crime.category.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="ps-0">Date Reported:</th>
+                                    <td>{{ crime.reported_on|date:"F d, Y" }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="ps-0">Incident Date:</th>
+                                    <td>{{ crime.date_of_crime|date:"F d, Y" }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="ps-0">Incident Time:</th>
+                                    <td>{{ crime.time_of_crime|time:"h:i A" }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="text-primary"><i class="fas fa-map-marker-alt me-2"></i>Location Details</h5>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th class="ps-0" style="width: 40%;">City:</th>
+                                    <td>{{ crime.location.city }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="ps-0">State:</th>
+                                    <td>{{ crime.location.state }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="ps-0">Country:</th>
+                                    <td>{{ crime.location.country }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="ps-0">Postal Code:</th>
+                                    <td>{{ crime.location.postal_code }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <h5 class="text-primary mb-3"><i class="fas fa-align-left me-2"></i>Description</h5>
+                    <div class="p-3 bg-light rounded mb-4">
+                        <p class="mb-0">{{ crime.description|linebreaks }}</p>
+                    </div>
+                    
+                    {% if crime.evidence_file %}
+                    <h5 class="text-primary mb-3"><i class="fas fa-paperclip me-2"></i>Evidence File</h5>
+                    <div class="row mb-4">
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body p-2 text-center">
+                                    <i class="fas fa-file fa-2x text-primary mb-2"></i>
+                                    <p class="mb-1 text-truncate">{{ crime.evidence_file.name|slice:"10:" }}</p>
+                                    <a href="{{ crime.evidence_file.url }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                        <i class="fas fa-download me-1"></i>Download
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'crime_list' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to List
+                        </a>
+                        
+                        {% if user.is_authenticated and crime.reported_by == user %}
+                        <div>
+                            {% if crime.status == 'PENDING' %}
+                            <button type="button" class="btn btn-warning" disabled>
+                                <i class="fas fa-clock me-2"></i>Awaiting Review
+                            </button>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        
+                        {% if user.is_authenticated and user.profile.user_type in 'admin,police' %}
+                        <div>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateStatusModal">
+                                <i class="fas fa-edit me-2"></i>Update Status
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Case Updates Section -->
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-history me-2"></i>Case Updates</h5>
+                </div>
+                <div class="card-body">
+                    {% if updates %}
+                    <div class="timeline">
+                        {% for update in updates %}
+                        <div class="timeline-item">
+                            <div class="timeline-marker bg-{% if update.crime_report.status == 'PENDING' %}warning{% elif update.crime_report.status == 'INVESTIGATING' %}info{% elif update.crime_report.status == 'RESOLVED' %}success{% elif update.crime_report.status == 'CLOSED' %}secondary{% else %}danger{% endif %}"></div>
+                            <div class="timeline-content">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h5 class="mb-0">{{ update.crime_report.get_status_display }}</h5>
+                                    <small class="text-muted">
+                                        <i class="fas fa-clock me-1"></i>{{ update.timestamp|date:"F d, Y - h:i A" }}
+                                    </small>
+                                </div>
+                                <p class="mb-1">{{ update.update_text }}</p>
+                                <small class="text-muted">Updated by: {{ update.updated_by.get_full_name|default:update.updated_by.username }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-history fa-4x text-muted mb-3"></i>
+                        <h5>No Updates Yet</h5>
+                        <p class="text-muted">There are no updates on this case yet. Check back later for status updates.</p>
+                    </div>
+                    {% endif %}
+                    
+                    {% if user.is_authenticated and user.profile.user_type in 'admin,police' %}
+                    <div class="mt-4">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUpdateModal">
+                            <i class="fas fa-plus me-2"></i>Add Update
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Reporter Information -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-user me-2"></i>Reporter Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        {% if crime.reported_by.userprofile.profile_picture %}
+                            <img src="{{ crime.reported_by.userprofile.profile_picture.url }}" alt="Reporter" class="img-fluid rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+                        {% else %}
+                            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 100px; height: 100px;">
+                                <i class="fas fa-user fa-3x text-secondary"></i>
+                            </div>
+                        {% endif %}
+                        <h5>{{ crime.reported_by.get_full_name }}</h5>
+                        <p class="text-muted mb-0">@{{ crime.reported_by.username }}</p>
+                    </div>
+                    
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-envelope me-2 text-primary"></i>Email</span>
+                            <span class="text-muted">{{ crime.reported_by.email }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-phone me-2 text-primary"></i>Phone</span>
+                            <span class="text-muted">{{ crime.reported_by.userprofile.phone_number|default:"Not provided" }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-calendar-alt me-2 text-primary"></i>Joined</span>
+                            <span class="text-muted">{{ crime.reported_by.date_joined|date:"F d, Y" }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Similar Cases -->
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-link me-2"></i>Similar Cases</h5>
+                </div>
+                <div class="card-body">
+                    {% if similar_reports %}
+                    <div class="list-group">
+                        {% for similar in similar_reports %}
+                        <a href="{% url 'crime_detail' similar.id %}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ similar.title }}</h6>
+                                <small class="text-muted">{{ similar.date_reported|date:"M d" }}</small>
+                            </div>
+                            <p class="mb-1 text-muted small">{{ similar.category.name }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small>{{ similar.location.city }}, {{ similar.location.state }}</small>
+                                <span class="badge bg-{% if similar.status == 'PENDING' %}warning{% elif similar.status == 'INVESTIGATING' %}info{% elif similar.status == 'RESOLVED' %}success{% elif similar.status == 'CLOSED' %}secondary{% else %}danger{% endif %} rounded-pill">
+                                    {{ similar.get_status_display }}
+                                </span>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <h6>No Similar Cases</h6>
+                        <p class="text-muted small">No similar cases found in the database.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update Status Modal -->
+{% if user.is_authenticated and user.profile.user_type in 'admin,police' %}
+<div class="modal fade" id="updateStatusModal" tabindex="-1" aria-labelledby="updateStatusModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="updateStatusModalLabel"><i class="fas fa-edit me-2"></i>Update Case Status</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{% url 'update_report_status' crime.id %}">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="id_status" class="form-label">Status</label>
+                        <select class="form-select" id="id_status" name="status" required>
+                            <option value="pending" {% if crime.status == 'pending' %}selected{% endif %}>Pending</option>
+                            <option value="investigating" {% if crime.status == 'investigating' %}selected{% endif %}>Investigating</option>
+                            <option value="resolved" {% if crime.status == 'resolved' %}selected{% endif %}>Resolved</option>
+                            <option value="closed" {% if crime.status == 'closed' %}selected{% endif %}>Closed</option>
+                            <option value="rejected" {% if crime.status == 'rejected' %}selected{% endif %}>Rejected</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_update_text" class="form-label">Update Notes</label>
+                        <textarea class="form-control" id="id_update_text" name="update_text" rows="4" required placeholder="Provide details about this status update..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Status</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Update Modal -->
+<div class="modal fade" id="addUpdateModal" tabindex="-1" aria-labelledby="addUpdateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addUpdateModalLabel"><i class="fas fa-plus me-2"></i>Add Case Update</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{% url 'update_report_status' crime.id %}?update_only=true">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <input type="hidden" name="status" value="{{ crime.status }}">
+                    <div class="mb-3">
+                        <label for="id_update_text_only" class="form-label">Update Notes</label>
+                        <textarea class="form-control" id="id_update_text_only" name="update_text" rows="4" required placeholder="Add new information or updates about this case..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Timeline styling */
+    .timeline {
+        position: relative;
+        padding-left: 30px;
+    }
+    
+    .timeline:before {
+        content: '';
+        position: absolute;
+        left: 10px;
+        top: 0;
+        height: 100%;
+        width: 2px;
+        background-color: #e9ecef;
+    }
+    
+    .timeline-item {
+        position: relative;
+        margin-bottom: 25px;
+    }
+    
+    .timeline-marker {
+        position: absolute;
+        left: -30px;
+        top: 5px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        box-shadow: 0 0 0 2px #e9ecef;
+    }
+    
+    .timeline-content {
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 0.25rem;
+    }
+</style>
+{% endblock %}

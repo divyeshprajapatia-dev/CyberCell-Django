@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <!-- Background -->
+  <rect width="400" height="400" fill="#f5f5f5"/>
+  
+  <!-- Document outline -->
+  <rect x="100" y="80" width="200" height="240" rx="10" ry="10" fill="#ffffff" stroke="#2196f3" stroke-width="3"/>
+  
+  <!-- Document lines -->
+  <line x1="130" y1="120" x2="270" y2="120" stroke="#e0e0e0" stroke-width="2"/>
+  <line x1="130" y1="150" x2="270" y2="150" stroke="#e0e0e0" stroke-width="2"/>
+  <line x1="130" y1="180" x2="270" y2="180" stroke="#e0e0e0" stroke-width="2"/>
+  <line x1="130" y1="210" x2="270" y2="210" stroke="#e0e0e0" stroke-width="2"/>
+  <line x1="130" y1="240" x2="270" y2="240" stroke="#e0e0e0" stroke-width="2"/>
+  <line x1="130" y1="270" x2="270" y2="270" stroke="#e0e0e0" stroke-width="2"/>
+  
+  <!-- Magnifying glass -->
+  <circle cx="260" cy="140" r="40" fill="none" stroke="#ff5722" stroke-width="3" opacity="0.7"/>
+  <line x1="290" y1="170" x2="320" y2="200" stroke="#ff5722" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  
+  <!-- Text -->
+  <text x="200" y="340" fill="#757575" font-family="Arial, sans-serif" font-size="16" text-anchor="middle">Evidence Document</text>
+</svg>

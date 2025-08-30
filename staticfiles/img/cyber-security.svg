@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#0a192f"/>
+  
+  <!-- Shield outline -->
+  <path d="M400 100 L550 150 L550 300 C550 400 450 500 400 525 C350 500 250 400 250 300 L250 150 Z" fill="none" stroke="#64ffda" stroke-width="10"/>
+  
+  <!-- Lock body -->
+  <rect x="350" y="250" width="100" height="100" rx="10" ry="10" fill="#64ffda"/>
+  
+  <!-- Lock shackle -->
+  <path d="M375 250 L375 200 C375 175 425 175 425 200 L425 250" fill="none" stroke="#64ffda" stroke-width="15" stroke-linecap="round"/>
+  
+  <!-- Digital circuit lines -->
+  <path d="M250 150 L150 150 L150 350 L250 350" fill="none" stroke="#64ffda" stroke-width="3" stroke-dasharray="10,5"/>
+  <path d="M550 150 L650 150 L650 350 L550 350" fill="none" stroke="#64ffda" stroke-width="3" stroke-dasharray="10,5"/>
+  
+  <!-- Binary code -->
+  <text x="150" y="380" fill="#64ffda" font-family="monospace" font-size="12">10110101</text>
+  <text x="150" y="400" fill="#64ffda" font-family="monospace" font-size="12">01001010</text>
+  <text x="600" y="380" fill="#64ffda" font-family="monospace" font-size="12">11010010</text>
+  <text x="600" y="400" fill="#64ffda" font-family="monospace" font-size="12">00101101</text>
+  
+  <!-- Title -->
+  <text x="400" y="75" fill="#ffffff" font-family="Arial, sans-serif" font-size="30" text-anchor="middle" font-weight="bold">CYBER SECURITY</text>
+  
+  <!-- Nodes -->
+  <circle cx="150" cy="150" r="5" fill="#64ffda"/>
+  <circle cx="150" cy="350" r="5" fill="#64ffda"/>
+  <circle cx="650" cy="150" r="5" fill="#64ffda"/>
+  <circle cx="650" cy="350" r="5" fill="#64ffda"/>
+  <circle cx="250" cy="150" r="5" fill="#64ffda"/>
+  <circle cx="250" cy="350" r="5" fill="#64ffda"/>
+  <circle cx="550" cy="150" r="5" fill="#64ffda"/>
+  <circle cx="550" cy="350" r="5" fill="#64ffda"/>
+  
+  <!-- Small decorative elements -->
+  <circle cx="400" cy="200" r="3" fill="#ffffff"/>
+  <circle cx="400" cy="300" r="3" fill="#ffffff"/>
+  <circle cx="350" cy="300" r="3" fill="#ffffff"/>
+  <circle cx="450" cy="300" r="3" fill="#ffffff"/>
+</svg>

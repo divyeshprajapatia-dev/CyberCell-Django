@@ -1,0 +1,64 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$pMtEAg9BGSHMnUZFUOkBZM$+UOoZFfA0UxEQZGwvjCzqH9Uh+EXEy/e2Ue8sCcAcSA=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "citizen1",
+      "first_name": "John",
+      "last_name": "Doe",
+      "email": "john.doe@example.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-08-02T12:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$pMtEAg9BGSHMnUZFUOkBZM$+UOoZFfA0UxEQZGwvjCzqH9Uh+EXEy/e2Ue8sCcAcSA=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "officer1",
+      "first_name": "Jane",
+      "last_name": "Smith",
+      "email": "jane.smith@police.gov",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2025-08-02T12:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "crime_report.userprofile",
+    "pk": 1,
+    "fields": {
+      "user": 2,
+      "phone_number": "9876543210",
+      "address": "123 Main St, Anytown, AN 12345",
+      "user_type": "citizen",
+      "police_id": null,
+      "department": null,
+      "profile_picture": ""
+    }
+  },
+  {
+    "model": "crime_report.userprofile",
+    "pk": 2,
+    "fields": {
+      "user": 3,
+      "phone_number": "8765432109",
+      "address": "456 Police HQ, Anytown, AN 12345",
+      "user_type": "police",
+      "police_id": "PO12345",
+      "department": "Cyber Crime Division",
+      "profile_picture": ""
+    }
+  }
+]

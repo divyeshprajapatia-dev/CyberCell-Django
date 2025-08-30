@@ -1,0 +1,199 @@
+{% extends 'crime_report/base.html' %}
+{% load static %}
+
+{% block title %}CyberCell - Cyber Crime Reporting Portal{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Report Cyber Crimes Safely & Securely</h1>
+                <p class="lead mb-4">CyberCell is your trusted platform for reporting cyber crimes. We ensure your reports are handled with confidentiality and professionalism.</p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                    <!-- {% if user.is_authenticated %}
+                        <a href="{% url 'report_crime' %}" class="btn btn-light btn-lg px-4 me-md-2">Report a Crime</a>
+                        <a href="{% url 'crime_list' %}" class="btn btn-outline-light btn-lg px-4">View Reports</a>
+                    {% else %}
+                        <a href="{% url 'register' %}" class="btn btn-light btn-lg px-4 me-md-2">Register Now</a>
+                        <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg px-4">Login</a>
+                    {% endif %} -->
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <img src="{% static 'img/cyber-security.svg' %}" alt="Cyber Security" class="img-fluid rounded shadow">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <i class="fas fa-file-alt"></i>
+                    <h3>{{ total_reports }}</h3>
+                    <p class="text-muted">Total Reports</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>{{ resolved_reports }}</h3>
+                    <p class="text-muted">Resolved Cases</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <i class="fas fa-clock"></i>
+                    <h3>{{ pending_reports }}</h3>
+                    <p class="text-muted">Pending Cases</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <i class="fas fa-search"></i>
+                    <h3>{{ investigating_reports }}</h3>
+                    <p class="text-muted">Under Investigation</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Our Services</h2>
+            <p class="lead text-muted">We provide comprehensive cyber crime reporting and tracking services</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-file-alt fa-3x text-primary mb-3"></i>
+                        <h4 class="card-title">Report Crimes</h4>
+                        <p class="card-text">Submit detailed reports about cyber crimes you've experienced or witnessed.</p>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'report_crime' %}" class="btn btn-primary">Report Now</a>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="btn btn-primary">Login to Report</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-search fa-3x text-primary mb-3"></i>
+                        <h4 class="card-title">Track Status</h4>
+                        <p class="card-text">Monitor the progress of your reported cases through our transparent tracking system.</p>
+                        <a href="{% url 'crime_list' %}" class="btn btn-primary">View Reports</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+                        <h4 class="card-title">Get Protection</h4>
+                        <p class="card-text">Receive guidance on protecting yourself from future cyber threats and attacks.</p>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'profile' %}" class="btn btn-primary">View Profile</a>
+                        {% else %}
+                            <a href="{% url 'register' %}" class="btn btn-primary">Register Now</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Reports Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Recent Reports</h2>
+            <p class="lead text-muted">Stay updated with the latest cyber crime reports</p>
+        </div>
+        <div class="row">
+            {% if recent_reports %}
+                {% for report in recent_reports %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span>{{ report.category.name }}</span>
+                                <span class="badge bg-{{ report.get_status_display_class }}">{{ report.get_status_display }}</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">{{ report.title }}</h5>
+                                <p class="card-text">{{ report.description|truncatewords:20 }}</p>
+                                <p class="card-text"><small class="text-muted">Location: {{ report.location.city }}, {{ report.location.state }}</small></p>
+                            </div>
+                            <div class="card-footer text-muted d-flex justify-content-between">
+                                <span>Reported: {{ report.reported_on|date:"M d, Y" }}</span>
+                                <a href="{% url 'crime_detail' report.id %}" class="btn btn-sm btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center">
+                    <p>No reports available yet.</p>
+                </div>
+            {% endif %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'crime_list' %}" class="btn btn-primary">View All Reports</a>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Crime Categories</h2>
+            <p class="lead text-muted">We handle various types of cyber crimes</p>
+        </div>
+        <div class="row">
+            {% if crime_categories %}
+                {% for category in crime_categories %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ category.name }}</h5>
+                                <p class="card-text">{{ category.description|default:"No description available."|truncatewords:30 }}</p>
+                                <a href="{% url 'crime_list' %}?category={{ category.id }}" class="btn btn-outline-primary">View Reports</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center">
+                    <p>No categories available yet.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5" style="background-color: var(--primary-color); color: white;">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-4">Ready to Report a Cyber Crime?</h2>
+        <p class="lead mb-4">Your report can help protect others from becoming victims.</p>
+        {% if user.is_authenticated %}
+            <a href="{% url 'report_crime' %}" class="btn btn-light btn-lg">Report Now</a>
+        {% else %}
+            <a href="{% url 'register' %}" class="btn btn-light btn-lg me-2">Register</a>
+            <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">Login</a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

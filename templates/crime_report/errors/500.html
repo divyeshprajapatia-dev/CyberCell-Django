@@ -1,0 +1,9 @@
+{% extends 'crime_report/base.html' %}
+
+{% block content %}
+<div class="error-container">
+    <h1>500 - Internal Server Error</h1>
+    <p>Sorry, something went wrong on our end. Please try again later.</p>
+    <a href="{% url 'home' %}" class="btn btn-primary">Return to Home</a>
+</div>
+{% endblock %}

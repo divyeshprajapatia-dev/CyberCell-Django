@@ -1,0 +1,105 @@
+{% extends 'crime_report/base.html' %}
+
+{% block title %}Update User Type - CyberCell{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Update User Type</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ user.username }}</h5>
+                    <p class="text-muted">
+                        <i class="fas fa-envelope me-2"></i> {{ user.email }}<br>
+                        <i class="fas fa-user me-2"></i> {{ user.first_name }} {{ user.last_name }}<br>
+                        <i class="fas fa-calendar-alt me-2"></i> Joined: {{ user.date_joined|date:"F d, Y" }}
+                    </p>
+                    
+                    <div class="alert alert-info">
+                        <h6 class="alert-heading">Current User Type: <span class="badge bg-secondary">{{ user.profile.get_user_type_display }}</span></h6>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="id_user_type" class="form-label">User Type</label>
+                            {{ form.user_type.errors }}
+                            {{ form.user_type|safe }}
+                        </div>
+                        
+                        <div class="mb-3 police-fields" id="police-fields">
+                            <label for="id_police_id" class="form-label">Police ID</label>
+                            {{ form.police_id.errors }}
+                            {{ form.police_id|safe }}
+                            <div class="form-text">Required for police officers.</div>
+                        </div>
+                        
+                        <div class="mb-3 police-fields" id="department-fields">
+                            <label for="id_department" class="form-label">Department</label>
+                            {{ form.department.errors }}
+                            {{ form.department|safe }}
+                            <div class="form-text">Required for police officers and admins.</div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'manage_users' %}" class="btn btn-outline-secondary me-md-2">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Update User Type</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add Bootstrap form classes to the Django form fields
+    document.addEventListener('DOMContentLoaded', function() {
+        const userTypeSelect = document.getElementById('id_user_type');
+        const policeIdInput = document.getElementById('id_police_id');
+        const departmentInput = document.getElementById('id_department');
+        const policeFields = document.querySelectorAll('.police-fields');
+        
+        if (userTypeSelect) {
+            userTypeSelect.classList.add('form-select');
+            
+            // Show/hide police fields based on user type
+            function togglePoliceFields() {
+                const selectedValue = userTypeSelect.value;
+                
+                if (selectedValue === 'police' || selectedValue === 'admin') {
+                    document.getElementById('department-fields').style.display = 'block';
+                } else {
+                    document.getElementById('department-fields').style.display = 'none';
+                }
+                
+                if (selectedValue === 'police') {
+                    document.getElementById('police-fields').style.display = 'block';
+                } else {
+                    document.getElementById('police-fields').style.display = 'none';
+                }
+            }
+            
+            // Initial toggle
+            togglePoliceFields();
+            
+            // Toggle on change
+            userTypeSelect.addEventListener('change', togglePoliceFields);
+        }
+        
+        if (policeIdInput) {
+            policeIdInput.classList.add('form-control');
+        }
+        
+        if (departmentInput) {
+            departmentInput.classList.add('form-control');
+        }
+    });
+</script>
+{% endblock %}

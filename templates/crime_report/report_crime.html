@@ -1,0 +1,272 @@
+{% extends 'crime_report/base.html' %}
+
+{% block title %}Report a Crime - CyberCell{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h4 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Report a Cybercrime</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="alert alert-info" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Important:</strong> Please provide accurate and detailed information about the incident. This will help us investigate your case more effectively.
+                    </div>
+                    
+                    <form method="post" enctype="multipart/form-data" action="{% url 'report_crime' %}" id="crime-report-form">
+                        {% csrf_token %}
+                        <!-- Debug info -->
+                        <div class="alert alert-secondary">
+                            <p>User: {{ request.user.username }}</p>
+                            <p>Authenticated: {{ request.user.is_authenticated }}</p>
+                            <p>Form Action: {% url 'report_crime' %}</p>
+                            <p>Form Method: POST</p>
+                        </div>
+                        <div class="alert alert-info">
+                            <p>Try filling at least the required fields before submitting:</p>
+                            <ul>
+                                <li>Title</li>
+                                <li>Category</li>
+                                <li>Date of Incident</li>
+                                <li>City</li>
+                                <li>State</li>
+                                <li>Description</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="row">
+                            <!-- Left Column -->
+                            <div class="col-md-6">
+                                <h5 class="mb-3">Incident Details</h5>
+                                
+                                <!-- Title field -->
+                                <div class="mb-3">
+                                    <label for="{{ crime_form.title.id_for_label }}" class="form-label">Title/Subject</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-heading"></i></span>
+                                        {{ crime_form.title }}
+                                    </div>
+                                    {% if crime_form.title.errors %}
+                                        <div class="text-danger small mt-1">{{ crime_form.title.errors }}</div>
+                                    {% endif %}
+                                    <div class="form-text">A brief title describing the incident</div>
+                                </div>
+                                
+                                <!-- Category field -->
+                                <div class="mb-3">
+                                    <label for="{{ crime_form.category.id_for_label }}" class="form-label">Crime Category</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                                        {{ crime_form.category }}
+                                    </div>
+                                    {% if crime_form.category.errors %}
+                                        <div class="text-danger small mt-1">{{ crime_form.category.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Date of crime field -->
+                                <div class="mb-3">
+                                    <label for="{{ crime_form.date_of_crime.id_for_label }}" class="form-label">Date of Incident</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                        {{ crime_form.date_of_crime }}
+                                    </div>
+                                    {% if crime_form.date_of_crime.errors %}
+                                        <div class="text-danger small mt-1">{{ crime_form.date_of_crime.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Time of crime field -->
+                                <div class="mb-3">
+                                    <label for="{{ crime_form.time_of_crime.id_for_label }}" class="form-label">Time of Incident (Approximate)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-clock"></i></span>
+                                        {{ crime_form.time_of_crime }}
+                                    </div>
+                                    {% if crime_form.time_of_crime.errors %}
+                                        <div class="text-danger small mt-1">{{ crime_form.time_of_crime.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Evidence file field -->
+                                <div class="mb-3">
+                                    <label for="{{ crime_form.evidence_file.id_for_label }}" class="form-label">Evidence Files (Optional)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-file-upload"></i></span>
+                                        {{ crime_form.evidence_file }}
+                                    </div>
+                                    {% if crime_form.evidence_file.errors %}
+                                        <div class="text-danger small mt-1">{{ crime_form.evidence_file.errors }}</div>
+                                    {% endif %}
+                                    <div class="form-text">Upload screenshots, documents, or any relevant files (Max 5MB)</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Right Column -->
+                            <div class="col-md-6">
+                                <h5 class="mb-3">Location Information</h5>
+                                
+                                <!-- Location fields -->
+                                <div class="mb-3">
+                                    <label for="{{ location_form.city.id_for_label }}" class="form-label">City</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-city"></i></span>
+                                        {{ location_form.city }}
+                                    </div>
+                                    {% if location_form.city.errors %}
+                                        <div class="text-danger small mt-1">{{ location_form.city.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ location_form.state.id_for_label }}" class="form-label">State</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-map"></i></span>
+                                        {{ location_form.state }}
+                                    </div>
+                                    {% if location_form.state.errors %}
+                                        <div class="text-danger small mt-1">{{ location_form.state.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ location_form.area.id_for_label }}" class="form-label">Area</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                        {{ location_form.area }}
+                                    </div>
+                                    {% if location_form.area.errors %}
+                                        <div class="text-danger small mt-1">{{ location_form.area.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ location_form.pincode.id_for_label }}" class="form-label">Pincode</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-mail-bulk"></i></span>
+                                        {{ location_form.pincode }}
+                                    </div>
+                                    {% if location_form.pincode.errors %}
+                                        <div class="text-danger small mt-1">{{ location_form.pincode.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Description field (full width) -->
+                        <div class="mb-4 mt-3">
+                            <h5 class="mb-3">Incident Description</h5>
+                            <label for="{{ crime_form.description.id_for_label }}" class="form-label">Detailed Description</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-align-left"></i></span>
+                                {{ crime_form.description }}
+                            </div>
+                            {% if crime_form.description.errors %}
+                                <div class="text-danger small mt-1">{{ crime_form.description.errors }}</div>
+                            {% endif %}
+                            <div class="form-text">Please provide as much detail as possible about the incident, including what happened, how it happened, and any other relevant information.</div>
+                        </div>
+                        
+                        <!-- Terms and conditions checkbox -->
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                                <label class="form-check-label" for="termsCheck">
+                                    I confirm that the information provided is accurate to the best of my knowledge, and I understand that filing a false report may lead to legal consequences.
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Report
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add Bootstrap form classes to all form inputs
+    document.addEventListener('DOMContentLoaded', function() {
+        const formControls = document.querySelectorAll('input:not([type="checkbox"]), textarea, select');
+        formControls.forEach(function(element) {
+            element.classList.add('form-control');
+        });
+        
+        // Make textarea larger
+        const textareas = document.querySelectorAll('textarea');
+        textareas.forEach(function(textarea) {
+            textarea.rows = 5;
+        });
+        
+        // Add form submission event listener
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(event) {
+            console.log('Form is being submitted');
+            // Uncomment the next line to prevent form submission for testing
+            // event.preventDefault();
+        });
+        
+        // Add JavaScript submit button event listener
+        const jsSubmitBtn = document.getElementById('js-submit-btn');
+        jsSubmitBtn.addEventListener('click', function() {
+            console.log('JavaScript submit button clicked');
+            
+            // Fill in required fields with test data
+            const titleInput = document.querySelector('#id_title');
+            if (titleInput && !titleInput.value) {
+                titleInput.value = 'Test Crime Report';
+            }
+            
+            const categorySelect = document.querySelector('#id_category');
+            if (categorySelect && categorySelect.options.length > 0 && !categorySelect.value) {
+                categorySelect.selectedIndex = 1; // Select the first non-empty option
+            }
+            
+            const dateInput = document.querySelector('#id_date_of_crime');
+            if (dateInput && !dateInput.value) {
+                const today = new Date();
+                const formattedDate = today.toISOString().split('T')[0];
+                dateInput.value = formattedDate;
+            }
+            
+            const cityInput = document.querySelector('#id_city');
+            if (cityInput && !cityInput.value) {
+                cityInput.value = 'Test City';
+            }
+            
+            const stateInput = document.querySelector('#id_state');
+            if (stateInput && !stateInput.value) {
+                stateInput.value = 'Test State';
+            }
+            
+            const descriptionInput = document.querySelector('#id_description');
+            if (descriptionInput && !descriptionInput.value) {
+                descriptionInput.value = 'This is a test crime report description.';
+            }
+            
+            // Check the terms checkbox
+            const termsCheck = document.querySelector('#termsCheck');
+            if (termsCheck && !termsCheck.checked) {
+                termsCheck.checked = true;
+            }
+            
+            // Submit the form programmatically
+            console.log('Submitting form with test data');
+            form.submit();
+        });
+    });
+</script>
+{% endblock %}

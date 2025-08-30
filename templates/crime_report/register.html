@@ -1,0 +1,162 @@
+{% extends 'crime_report/base.html' %}
+
+{% block title %}Register - CyberCell{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h4 class="mb-0"><i class="fas fa-user-plus me-2"></i>Create an Account</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="mb-3">Account Information</h5>
+                                
+                                <!-- Username field -->
+                                <div class="mb-3">
+                                    <label for="{{ user_form.username.id_for_label }}" class="form-label">Username</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                        {{ user_form.username }}
+                                    </div>
+                                    {% if user_form.username.errors %}
+                                        <div class="text-danger small mt-1">{{ user_form.username.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Email field -->
+                                <div class="mb-3">
+                                    <label for="{{ user_form.email.id_for_label }}" class="form-label">Email</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                        {{ user_form.email }}
+                                    </div>
+                                    {% if user_form.email.errors %}
+                                        <div class="text-danger small mt-1">{{ user_form.email.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- First name field -->
+                                <div class="mb-3">
+                                    <label for="{{ user_form.first_name.id_for_label }}" class="form-label">First Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                                        {{ user_form.first_name }}
+                                    </div>
+                                    {% if user_form.first_name.errors %}
+                                        <div class="text-danger small mt-1">{{ user_form.first_name.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Last name field -->
+                                <div class="mb-3">
+                                    <label for="{{ user_form.last_name.id_for_label }}" class="form-label">Last Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                                        {{ user_form.last_name }}
+                                    </div>
+                                    {% if user_form.last_name.errors %}
+                                        <div class="text-danger small mt-1">{{ user_form.last_name.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h5 class="mb-3">Profile Information</h5>
+                                
+                                <!-- Password field -->
+                                <div class="mb-3">
+                                    <label for="{{ user_form.password1.id_for_label }}" class="form-label">Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                        {{ user_form.password1 }}
+                                    </div>
+                                    {% if user_form.password1.errors %}
+                                        <div class="text-danger small mt-1">{{ user_form.password1.errors }}</div>
+                                    {% endif %}
+                                    <div class="form-text small">{{ user_form.password1.help_text }}</div>
+                                </div>
+                                
+                                <!-- Password confirmation field -->
+                                <div class="mb-3">
+                                    <label for="{{ user_form.password2.id_for_label }}" class="form-label">Confirm Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                        {{ user_form.password2 }}
+                                    </div>
+                                    {% if user_form.password2.errors %}
+                                        <div class="text-danger small mt-1">{{ user_form.password2.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Phone number field -->
+                                <div class="mb-3">
+                                    <label for="{{ profile_form.phone_number.id_for_label }}" class="form-label">Phone Number</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                        {{ profile_form.phone_number }}
+                                    </div>
+                                    {% if profile_form.phone_number.errors %}
+                                        <div class="text-danger small mt-1">{{ profile_form.phone_number.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Address field -->
+                                <div class="mb-3">
+                                    <label for="{{ profile_form.address.id_for_label }}" class="form-label">Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                        {{ profile_form.address }}
+                                    </div>
+                                    {% if profile_form.address.errors %}
+                                        <div class="text-danger small mt-1">{{ profile_form.address.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Profile picture field -->
+                        <div class="mb-3">
+                            <label for="{{ profile_form.profile_picture.id_for_label }}" class="form-label">Profile Picture (Optional)</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-image"></i></span>
+                                {{ profile_form.profile_picture }}
+                            </div>
+                            {% if profile_form.profile_picture.errors %}
+                                <div class="text-danger small mt-1">{{ profile_form.profile_picture.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Register</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer bg-light text-center py-3">
+                    <p class="mb-0">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add Bootstrap form classes to all form inputs
+    document.addEventListener('DOMContentLoaded', function() {
+        const formControls = document.querySelectorAll('input, textarea, select');
+        formControls.forEach(function(element) {
+            if (!element.classList.contains('form-check-input')) {
+                element.classList.add('form-control');
+            }
+        });
+    });
+</script>
+{% endblock %}

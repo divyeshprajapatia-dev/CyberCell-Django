@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 80" width="300" height="80">
+  <!-- Background -->
+  <rect width="300" height="80" fill="none"/>
+  
+  <!-- Shield -->
+  <path d="M50 10 L80 20 L80 45 C80 60 60 70 50 75 C40 70 20 60 20 45 L20 20 Z" fill="#0d6efd" stroke="#0a58ca" stroke-width="2"/>
+  
+  <!-- Lock -->
+  <rect x="40" y="35" width="20" height="20" rx="3" ry="3" fill="#ffffff"/>
+  <path d="M45 35 L45 30 C45 25 55 25 55 30 L55 35" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Digital circuit lines -->
+  <path d="M20 20 L10 20 L10 50 L20 50" fill="none" stroke="#ffffff" stroke-width="1" stroke-dasharray="2,1"/>
+  <path d="M80 20 L90 20 L90 50 L80 50" fill="none" stroke="#ffffff" stroke-width="1" stroke-dasharray="2,1"/>
+  
+  <!-- Text -->
+  <text x="110" y="45" fill="#0d6efd" font-family="Arial, sans-serif" font-size="30" font-weight="bold">CyberCell</text>
+  <text x="110" y="65" fill="#6c757d" font-family="Arial, sans-serif" font-size="12">Cyber Crime Reporting Portal</text>
+</svg>
